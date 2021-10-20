@@ -1,1 +1,1 @@
-"# SecondaParteASD" 
+SecondaParteASD
