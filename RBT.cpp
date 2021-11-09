@@ -102,7 +102,7 @@ class RBT{
         }
     }
 
-    void RB_Insert(RBTNode* x) {
+    void insert(RBTNode* x) {
         treeInsert(x);
         x->color = RED;
         
@@ -189,21 +189,21 @@ class RBT{
             root = NIL;
         }
 
-        void insertRBT(int k, string v){
+        void insert(int k, string v){
             RBTNode* toInsert = new RBTNode();
             toInsert->key = k;
             toInsert->value = v;
             toInsert->parent = NIL;
             toInsert->left = NIL;
             toInsert->right = NIL;
-            RB_Insert(toInsert);
+            insert(toInsert);
         }
 
-        string findRBT(int k){
+        string find(int k){
             return findKey(root, k);
         }
 
-        void showRBT(){
+        void show(){
             preorder(root);
             cout << endl;
         }

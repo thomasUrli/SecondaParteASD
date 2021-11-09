@@ -71,18 +71,18 @@ class BST{
             root = NULL;
         }
 
-        void insertBST(int k, string v){
+        void insert(int k, string v){
             BSTNode* toInsert = new BSTNode();
             toInsert->key = k;
             toInsert->value = v;
             insert(toInsert);
         }
 
-        string findBST(int k){
+        string find(int k){
             return findKey(root, k);
         }
 
-        void showBST(){
+        void show(){
             preorder(root);
         }
 };
