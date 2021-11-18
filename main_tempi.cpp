@@ -31,26 +31,25 @@ template<class TreeType> int calcStdDev();
 
 random_device rd;
 mt19937 gen(rd());
-uniform_int_distribution<> distrib(1, 10000000);
+uniform_int_distribution<> distrib(1, 1000000000);
 
 
 unsigned int pseudoRand(){ // genera in modo pseudo casuale un valore k
-    return (unsigned int) distrib(gen);  // generates number in the range 1..9999999 
+    return distrib(gen);
 }
 
 
 int main() {
-    calcAvgTime<AVL>();
+    calcStdDev<AVL>();
 }
 
 template<class TreeType> int calcAvgTime() {
-    int iter = 0;
     for(int i = 0; i < 100; i++) {
+        int iter = 0;
         TreeType* tree = new TreeType();
         int size = (int)floor(A * pow(B, i));
         cout << "albero numero: " << i+1 << "\tSize: " << size << endl;
         double minTime = getTmin();
-        double partialTime;
         
         steady_clock::time_point start = steady_clock::now();
         steady_clock::time_point end;
@@ -81,14 +80,14 @@ template<class TreeType> int calcStdDev() {
         int size = (int)floor(A * pow(B, i));
         cout << "alberi numero: " << i+1 << "\tSize: " << size << endl;
 
+        double avgTime = 0;
         double times[N];
         double minTime = getTmin();
+        double stdDev = 0.0;
 
         for (int j=0; j<N; j++) {
             TreeType *tree = new TreeType();
             int iter = 0;
-            duration<double, seconds::period> partialTime;
-            double doubleTime = 0.0;
             
             steady_clock::time_point start = steady_clock::now();
             steady_clock::time_point end;
@@ -102,21 +101,26 @@ template<class TreeType> int calcStdDev() {
                 }
 
                 end = steady_clock::now();
-                partialTime = duration_cast<duration<double>>(end - start);
-                doubleTime = partialTime.count();
                 iter++;
-            } while(doubleTime <= minTime);
-            double iterTime = doubleTime / (double) iter; 
-
+            } while(duration_cast<duration<double>>(end - start).count() <= minTime);
+            double iterTime = (duration_cast<nanoseconds>(end - start).count() / iter) / size;
             times[j] = iterTime;
+            avgTime += iterTime;
+
             delete tree;
         }
+        
+        avgTime = avgTime / 20;
 
-        double finalTime = getFinalTime(times, N);
-        cout << "FINAL: " << finalTime << endl;
+        for (int k=0; k<N; k++) {
+            stdDev += pow((times[k] - avgTime), 2);
+        }
+
+        stdDev = stdDev / 20;
+
+        cout << "FINAL: " << stdDev << endl;
     }
-
-return 0;
+    return 0;
 }
 
 // DEFINIZIONE FUNZIONI

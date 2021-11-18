@@ -9,14 +9,14 @@ class AVL {
             AVLNode* left;
             AVLNode* right;
             AVLNode();
-            AVLNode(int k, std::string v);
+            AVLNode(int, std::string);
             ~AVLNode();
         };
         
         AVL();
         ~AVL();
-        void insert(int k, std::string v);
-        std::string find(int k);
+        void insert(int, std::string);
+        std::string find(int);
         void show();
         AVLNode* getRoot();
 
@@ -24,7 +24,7 @@ class AVL {
         AVLNode* root;
         AVLNode* rightRotate(AVLNode*);
         AVLNode* leftRotate(AVLNode*);
-        int getBalance(AVLNode* node);
+        int getBalance(AVLNode*);
         AVLNode* insert(AVLNode*, int, std::string);
         int findMax(int, int);
         int getHeight(AVLNode*);
