@@ -16,7 +16,7 @@ class AVL {
         AVL();
         ~AVL();
         void insert(int, std::string);
-        std::string find(int);
+        AVLNode* find(int);
         void show();
         AVLNode* getRoot();
 
@@ -28,7 +28,7 @@ class AVL {
         AVLNode* insert(AVLNode*, int, std::string);
         int findMax(int, int);
         int getHeight(AVLNode*);
-        std::string findKey(AVLNode*, int);
+        AVLNode* findKey(AVLNode*, int);
         void preorder(AVLNode*);
 
 };

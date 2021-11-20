@@ -32,20 +32,34 @@ void BST::insert(BSTNode* z){
     }
 }
 
-string BST::findKey(BSTNode* r, int k) {
-    if (r == NULL) {
-        return "";
-    } 
+BST::BSTNode* BST::findKey(BSTNode* r, int k) {
+    // if (r == NULL) {
+    //     return "";
+    // } 
 
-    if(r->key == k){
-        return r->value;
-    } else{
-        if(r->key > k){
-            return findKey(r->left, k);
+    // if(r->key == k){
+    //     return r->value;
+    // } else{
+    //     if(r->key > k){
+    //         return findKey(r->left, k);
+    //     } else{
+    //         return findKey(r->right, k);
+    //     }
+    // }
+
+    while (r != nullptr) {
+        if(r->key == k){
+            return r;
         } else{
-            return findKey(r->right, k);
+            if(r->key < k){
+                r = r->right;
+            } else{
+                r = r->left;
+            }
         }
     }
+
+    return NULL;
 }
 
 void BST::preorder(BSTNode* r) {
@@ -83,7 +97,7 @@ void BST::insert(int k, string v){
     insert(toInsert);
 }
 
-string BST::find(int k){
+BST::BSTNode* BST::find(int k){
     return findKey(root, k);
 }
 

@@ -14,13 +14,13 @@ class BST {
         BST();
         ~BST();
         void insert(int, std::string);
-        std::string find(int);
+        BSTNode* find(int);
         void show();
 
     private:
         BSTNode* root;
         void insert(BSTNode*);
-        std::string findKey(BSTNode*, int);
+        BSTNode* findKey(BSTNode*, int);
         void preorder(BSTNode*);
 
 };

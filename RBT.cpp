@@ -7,7 +7,7 @@ using namespace std;
 
 
     //////////////////+++++++++++++++++++++++++++++++++++++
-RBT::RBTNode* NIL = new RBT::RBTNode(-1, "", RBT::BLACK, nullptr, nullptr);
+RBT::RBTNode* NIL = new RBT::RBTNode(-1, "", RBT::BLACK, NIL, NIL);
 RBT::RBTNode* root;
 
 void RBT::leftRotate(RBTNode* x){
@@ -126,20 +126,34 @@ void RBT::insert(RBTNode* x) {
     root->color = BLACK;
 }
 
-string RBT::findKey(RBTNode* r, int k) {
-    if (r == nullptr) {
-        return "";
-    }
+RBT::RBTNode* RBT::findKey(RBTNode* r, int k) {
+    // if (r == nullptr) {
+    //     return NULL;
+    // }
 
-    if(r->key == k || r == NIL){
-        return  r->value;
-    } else{
-        if(r->key > k){
-            return findKey(r->left, k);
-        } else{
-            return findKey(r->right, k);
+    // if(r->key == k || r == NIL){
+    //     return r;
+    // } else{
+    //     if(r->key > k){
+    //         return findKey(r->left, k);
+    //     } else{
+    //         return findKey(r->right, k);
+    //     }
+    // }
+
+    while (r != NIL) {
+        if (r->key == k) {
+            return r;
+        } else {
+            if (r->key < k) {
+                r = r->right;
+            } else {
+                r = r->left;
+            }
         }
     }
+
+    return NULL;
 }
 
 string RBT::color(RBTNode* x) {
@@ -162,16 +176,16 @@ void RBT::preorder(RBTNode* r) {
 
 RBT::RBTNode::RBTNode() {
     value = "";
-    parent = nullptr;
-    left = nullptr;
-    right = nullptr;
+    parent = NIL;
+    left = NIL;
+    right = NIL;
 }
 
 RBT::RBTNode::RBTNode(int k, std::string v, COLOR c, RBTNode* l, RBTNode* r) {
     key = k;
     value = v;
     color = c;
-    parent = nullptr;
+    parent = NIL;
     left = l;
     right = r;
 }
@@ -195,16 +209,11 @@ RBT::~RBT() {
 }
 
 void RBT::insert(int k, string v){
-    RBTNode* toInsert = new RBTNode();
-    toInsert->key = k;
-    toInsert->value = v;
-    toInsert->parent = NIL;
-    toInsert->left = NIL;
-    toInsert->right = NIL;
+    RBTNode* toInsert = new RBT::RBTNode(k, v, RBT::RED, NIL, NIL);
     insert(toInsert);
 }
 
-string RBT::find(int k){
+RBT::RBTNode* RBT::find(int k){
     return findKey(root, k);
 }
 
@@ -212,3 +221,28 @@ void RBT::show(){
     preorder(root);
     cout << endl;
 }
+
+// int main(){
+//     char command[20];
+//     int assignedKey;
+//     string assignedValue;
+//     RBT t;
+
+//     while(true){
+//         cin >> command;
+//         if(strcmp(command, "insert") == 0){
+//             cin >> assignedKey >> assignedValue;
+
+//             t.insert(assignedKey, assignedValue);
+//         } else if(strcmp(command, "find") == 0){
+//             cin >> assignedKey;
+//             RBT::RBTNode* r = t.find(assignedKey);
+//             cout << r->value << endl;
+//         } else if(strcmp(command, "show") == 0){
+//             t.show();
+//             cout << endl;
+//         } else {
+//             return 0;
+//         }
+//     }
+// }

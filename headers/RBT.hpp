@@ -22,7 +22,7 @@ class RBT {
         RBT();
         ~RBT();
         void insert(int, std::string);
-        std::string find(int);
+        RBTNode* find(int);
         void show();
 
     private:
@@ -31,7 +31,7 @@ class RBT {
         void rightRotate(RBTNode*);
         void treeInsert(RBTNode*);
         void insert(RBTNode*);
-        std::string findKey(RBTNode*, int);
+        RBTNode* findKey(RBTNode*, int);
         std::string color(RBTNode*);
         void preorder(RBTNode*);
 

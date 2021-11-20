@@ -139,10 +139,10 @@ int AVL::getHeight(AVLNode* x) {
     }
 }
 
-string AVL::findKey(AVLNode* r, int k) {
-    while (r != NULL) {
+AVL::AVLNode* AVL::findKey(AVLNode* r, int k) {
+    while (r != nullptr) {
         if(r->key == k){
-            return r->value;
+            return r;
         } else{
             if(r->key < k){
                 r = r->right;
@@ -152,7 +152,7 @@ string AVL::findKey(AVLNode* r, int k) {
         }
     }
 
-    return "";
+    return NULL;
 }
 
 void AVL::preorder(AVLNode* r) {
@@ -203,7 +203,7 @@ void AVL::insert(int k, string v){
     root = insert(root, k, v);
 }
 
-string AVL::find(int k){
+AVL::AVLNode* AVL::find(int k){
     return findKey(root, k);  
 }
 
