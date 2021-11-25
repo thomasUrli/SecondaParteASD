@@ -25,17 +25,13 @@ const int N = 20;
 
 string FILENAMES[] = {
     "BST_Times.txt",
-    "BST_StdDevs.txt",
     "RBT_Times.txt",
-    "RBT_StdDevs.txt",
     "AVL_Times.txt",
-    "AVL_StdDevs.txt"
 };
 
 // DICHIARAZIONE FUNZIONI
 double getResolution();
 double getTmin();
-double getFinalTime(double[], int);
 template<class TreeType> double calcAvgTime(int);
 template<class TreeType> double calcStdDev(int);
 void writeToFile(vector<vector<double>>, string[]);
@@ -70,7 +66,7 @@ int main() {
         RBTstdDevs[i] = calcStdDev<RBT>(size);
         AVLstdDevs[i] = calcStdDev<AVL>(size);
 
-        cout << i << " " << size << " " << BSTtimes[i] << " " << BSTstdDevs[i] << " " << RBTtimes[i] << " " << RBTstdDevs[i] << " " << AVLtimes[i] << " " << AVLstdDevs[i] << endl;
+        cout << size << " " << BSTtimes[i] << " " << BSTstdDevs[i] << " " << RBTtimes[i] << " " << RBTstdDevs[i] << " " << AVLtimes[i] << " " << AVLstdDevs[i] << endl;
     }
 
     vector<vector<double>> vectorsToWrite = {BSTtimes, BSTstdDevs, RBTtimes, RBTstdDevs, AVLtimes, AVLstdDevs};
@@ -101,7 +97,7 @@ template<class TreeType> double calcAvgTime(int size) {
 
         end = steady_clock::now();
         iter++;
-    } while(duration_cast<duration<double>>(end - start).count() <= minTime);
+    } while(duration_cast<nanoseconds>(end - start).count() < minTime);
     double avgTime = ((double) duration_cast<nanoseconds>(end - start).count() / iter) / size; 
 
     //cout << "FINAL: " << avgTime << endl;
@@ -110,13 +106,14 @@ template<class TreeType> double calcAvgTime(int size) {
 }
 
 template<class TreeType> double calcStdDev(int size) {    
-    double avgTime = 0;
+    double avgTime = 0.0;
     double times[N];
     double stdDev = 0.0;
 
     for (int j=0; j<N; j++) {
         TreeType *tree = new TreeType();
         int iter = 0;
+        double iterTime = 0.0;
         
         steady_clock::time_point start = steady_clock::now();
         steady_clock::time_point end;
@@ -131,8 +128,8 @@ template<class TreeType> double calcStdDev(int size) {
 
             end = steady_clock::now();
             iter++;
-        } while(duration_cast<duration<double>>(end - start).count() <= minTime);
-        double iterTime = ((double) duration_cast<nanoseconds>(end - start).count() / iter) / size;
+        } while(duration_cast<nanoseconds>(end - start).count() < minTime);
+        iterTime = ((double) duration_cast<nanoseconds>(end - start).count() / iter) / size;
         times[j] = iterTime;
         avgTime += iterTime;
 
@@ -142,42 +139,61 @@ template<class TreeType> double calcStdDev(int size) {
     avgTime = avgTime / N;
 
     for (int k=0; k<N; k++) {
-        stdDev += pow((times[k] - avgTime), 2);
+        stdDev = stdDev + pow((times[k] - avgTime), 2);
     }
-
+    
     stdDev = stdDev / N;
+    stdDev = sqrt(stdDev);
 
     return stdDev;
 }
 
 void writeToFile(vector<vector<double>> vectors, string filenames[]) {
-    for (int i=0; i<6; i++) {
+    for (int i=0; i<6; i+=2) {
         ofstream file;
-        file.open(filenames[i],  ios::trunc);   //Elimina il contenuto presente nel file
+        file.open(filenames[i/2],  ios::trunc);   //Elimina il contenuto presente nel file
         
         file << "var data = [" << endl;
 
         for (int j = 0; j < 100; j++) {
-            int size = floor(A * pow(B, i));
-            file << "[" << size << ", " << vectors[i][j] << "]\n";
+            int size = floor(A * pow(B, j));
+            file << "[" << size << ", " << vectors[i][j] << ", " << vectors[i][j] - vectors[i+1][j] << ", " << vectors[i][j] + vectors[i+1][j] << "],\n";
         }
         
         file << "];";
         
         file.close();
     }
+
+    ofstream file;
+    file.open("BST_RBT_AVL.txt",  ios::trunc);
+
+    file << "var data = [" << endl; 
+
+    for (int i=0; i<100; i++) {
+        int size = floor(A * pow(B, i));
+        file << "[" << size << ", " << vectors[0][i] << ", " << vectors[2][i] << ", " << vectors[4][i] << "],\n";
+    }
+
+    file << "];";    
+    file.close();
     
 }
 
 double getResolution() {
-    steady_clock::time_point start = steady_clock::now();
     steady_clock::time_point end;
-    do {
-        end = steady_clock::now();
-    } while (start == end);
-    typedef duration<double, seconds::period> duration;
+    double resolution = 0.0;
+    
+    for (int i=0; i<20; i++) {
+        steady_clock::time_point start = steady_clock::now();
+        do {
+            end = steady_clock::now();
+        } while (start == end);
+        typedef duration<double, nanoseconds::period> duration;
+        resolution += duration(end - start).count();
+    }
 
-    return duration(end - start).count();
+    return (double) resolution/20;
 }
 
 double getTmin(){ // a posto
@@ -187,14 +203,4 @@ double getTmin(){ // a posto
     double Tmin = R * ((1.000/0.01) + 1.000);
 
     return Tmin;
-}
-
-double getFinalTime(double times[], int length) {
-    double sum = 0.0;
-
-    for (int i = 0; i < length; i++) {
-        sum += times[i];
-    }
-
-    return sum / length;
 }
