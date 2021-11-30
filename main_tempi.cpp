@@ -32,8 +32,7 @@ string FILENAMES[] = {
 // DICHIARAZIONE FUNZIONI
 double getResolution();
 double getTmin();
-template<class TreeType> double calcAvgTime(int);
-template<class TreeType> double calcStdDev(int);
+template<class TreeType> vector<double> calcTimes(int);
 void writeToFile(vector<vector<double>>, string[]);
 
 
@@ -59,12 +58,16 @@ int main() {
     for(int i = 0; i < 100; i++) {
         int size = floor(A * pow(B, i));
 
-        BSTtimes[i] = calcAvgTime<BST>(size);
-        RBTtimes[i] = calcAvgTime<RBT>(size);
-        AVLtimes[i] = calcAvgTime<AVL>(size);
-        BSTstdDevs[i] = calcStdDev<BST>(size);
-        RBTstdDevs[i] = calcStdDev<RBT>(size);
-        AVLstdDevs[i] = calcStdDev<AVL>(size);
+        vector<double> BSTresults = calcTimes<BST>(size);
+        vector<double> RBTresults = calcTimes<RBT>(size);
+        vector<double> AVLresults = calcTimes<AVL>(size);
+
+        BSTtimes[i] = BSTresults[0];
+        RBTtimes[i] = RBTresults[0];
+        AVLtimes[i] = AVLresults[0];
+        BSTstdDevs[i] = BSTresults[1];
+        RBTstdDevs[i] = RBTresults[1];
+        AVLstdDevs[i] = AVLresults[1];
 
         cout << size << " " << BSTtimes[i] << " " << BSTstdDevs[i] << " " << RBTtimes[i] << " " << RBTstdDevs[i] << " " << AVLtimes[i] << " " << AVLstdDevs[i] << endl;
     }
@@ -79,33 +82,7 @@ int main() {
 }
 
 // DEFINIZIONE FUNZIONI
-
-template<class TreeType> double calcAvgTime(int size) {
-    int iter = 0;
-    TreeType* tree = new TreeType();  
-    
-    steady_clock::time_point start = steady_clock::now();
-    steady_clock::time_point end;
-
-    do {
-        for(int n = 0; n < size; n++){
-                unsigned int key = pseudoRand();
-                if (tree->find(key) == NULL) {
-                    tree->insert(key, "");
-                }
-        }
-
-        end = steady_clock::now();
-        iter++;
-    } while(duration_cast<nanoseconds>(end - start).count() < minTime);
-    double avgTime = ((double) duration_cast<nanoseconds>(end - start).count() / iter) / size; 
-
-    //cout << "FINAL: " << avgTime << endl;
-    delete tree;
-    return avgTime;
-}
-
-template<class TreeType> double calcStdDev(int size) {    
+template<class TreeType> vector<double> calcTimes(int size) {    
     double avgTime = 0.0;
     double times[N];
     double stdDev = 0.0;
@@ -135,8 +112,11 @@ template<class TreeType> double calcStdDev(int size) {
 
         delete tree;
     }
+
+    vector<double> timesVec;
     
     avgTime = avgTime / N;
+
 
     for (int k=0; k<N; k++) {
         stdDev = stdDev + pow((times[k] - avgTime), 2);
@@ -145,7 +125,10 @@ template<class TreeType> double calcStdDev(int size) {
     stdDev = stdDev / N;
     stdDev = sqrt(stdDev);
 
-    return stdDev;
+    timesVec.push_back(avgTime);
+    timesVec.push_back(stdDev);
+
+    return timesVec;
 }
 
 void writeToFile(vector<vector<double>> vectors, string filenames[]) {
