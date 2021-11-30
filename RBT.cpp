@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <stdio.h>
-#include "headers/RBT.hpp"
+#include "RBT.hpp"
 
 using namespace std;
 

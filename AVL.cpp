@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <stdio.h>
-#include "headers/AVL.hpp"
+#include "AVL.hpp"
 
 using namespace std;
 
