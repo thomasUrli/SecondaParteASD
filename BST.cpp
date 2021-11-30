@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <stdio.h>
-#include "BST.hpp"
+#include "headers/BST.hpp"
 
 using namespace std;
 
